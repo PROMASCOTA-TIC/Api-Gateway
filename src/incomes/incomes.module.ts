@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ExpensesController } from './expenses.controller';
+import { IncomesController } from './incomes.controller';
 import { NatsModule } from 'src/transports';
 
 @Module({
-  controllers: [ExpensesController],
+  controllers: [IncomesController],
   providers: [],
   imports: [NatsModule],
 })
-export class ExpensesModule {}
+export class IncomesModule {}
