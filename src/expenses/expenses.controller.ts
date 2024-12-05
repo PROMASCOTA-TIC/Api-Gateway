@@ -32,9 +32,8 @@ export class ExpensesController {
     return this.client.send('delete_expense', {id});
   }
 
-  @Get('range')
+  @Post('range')
   findExpensesByDateRange(@Body() dateRange: GetByDateRangeDto) {
     return this.client.send('get_expenses_by_date_range', {...dateRange});
   }  
-
 }
