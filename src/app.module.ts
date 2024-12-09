@@ -4,9 +4,10 @@ import { NatsModule } from './transports/nats.module';
 import { envs } from './config';
 import { IncomesModule } from './incomes/incomes.module';
 import { FinancialReportModule } from './financial-report/financial-report.module';
+import { TransactionsModule } from './transactions/transaction.module';
 
 @Module({
-  imports: [ExpensesModule, NatsModule, IncomesModule, FinancialReportModule],
+  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule],
 })
 export class AppModule {}
 console.log(envs);
