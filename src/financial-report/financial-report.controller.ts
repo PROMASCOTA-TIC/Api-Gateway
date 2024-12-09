@@ -33,4 +33,19 @@ export class FinancialReportController {
   getExpensesByCategory(@Body() dateRange: GetByDateRangeDto) {
     return this.client.send('get_expenses_by_categories', {...dateRange});
   }
+
+  @Post('total-incomes')
+  getTotalIncomesByRange(@Body() dateRange: GetByDateRangeDto) {
+    return this.client.send('get_total_incomes_by_range', {...dateRange});
+  }
+
+  @Post('total-expenses')
+  getTotalExpensesByRange(@Body() dateRange: GetByDateRangeDto) {
+    return this.client.send('get_total_expenses_by_range', {...dateRange});
+  }
+
+  @Post('balance')
+  getBalanceByRange(@Body() dateRange: GetByDateRangeDto) {
+    return this.client.send('get_balance_by_range', {...dateRange});
+  }
 }
