@@ -5,9 +5,10 @@ import { envs } from './config';
 import { IncomesModule } from './incomes/incomes.module';
 import { FinancialReportModule } from './financial-report/financial-report.module';
 import { TransactionsModule } from './transactions/transaction.module';
+import { CommissionsModule } from './commissions/commissions.module';
 
 @Module({
-  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule],
+  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule],
 })
 export class AppModule {}
 console.log(envs);
