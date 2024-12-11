@@ -1,0 +1,1 @@
+export * from './entrepreneurs/create-product.dto';
