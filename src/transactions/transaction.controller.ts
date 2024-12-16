@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, ParseUUIDPipe } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateTransactionDto, UpdateTransactionDto } from 'src/common';
-import { UpdateTransferDto } from 'src/common/dto/finance/update-transfer.dto copy';
+import { CreateTransactionDto, UpdateTransactionDto, UpdateTransferDto } from 'src/common';
 import { NATS_SERVICE } from 'src/config';
 
 @Controller('transactions')
