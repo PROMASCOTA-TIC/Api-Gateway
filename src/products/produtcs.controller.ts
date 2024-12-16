@@ -1,5 +1,17 @@
-import { Body, Controller, Get, Inject, Post, Param, Delete, Patch, HttpException, HttpStatus } from '@nestjs/common';
+import { 
+  Body, 
+  Controller, 
+  Get, 
+  Inject, 
+  Post, 
+  Param, 
+  Delete, 
+  Patch, 
+  HttpException, 
+  HttpStatus 
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { CreateProductDto, UpdateProductDto } from 'src/common';
 import { NATS_SERVICE } from 'src/config';
 
@@ -18,7 +30,9 @@ export class ProductsController {
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     try {
-      const response = await this.client.send('create_product', createProductDto).toPromise();
+      const response = await lastValueFrom(
+        this.client.send('create_product', createProductDto),
+      );
       return response;
     } catch (error) {
       console.error('Error al crear el producto:', error.message);
@@ -37,7 +51,9 @@ export class ProductsController {
   @Get()
   async findAll() {
     try {
-      const response = await this.client.send('get_all_products', {}).toPromise();
+      const response = await lastValueFrom(
+        this.client.send('get_all_products', {}),
+      );
       return response;
     } catch (error) {
       console.error('Error al obtener los productos:', error.message);
@@ -57,7 +73,9 @@ export class ProductsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      const response = await this.client.send('get_product_by_id', id).toPromise();
+      const response = await lastValueFrom(
+        this.client.send('get_product_by_id', { id }),
+      );
       return response;
     } catch (error) {
       console.error('Error al obtener el producto:', error.message);
@@ -78,9 +96,9 @@ export class ProductsController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     try {
-      const response = await this.client
-        .send('update_product', { id, dto: updateProductDto })
-        .toPromise();
+      const response = await lastValueFrom(
+        this.client.send('update_product', { id, dto: updateProductDto }),
+      );
       return response;
     } catch (error) {
       console.error('Error al actualizar el producto:', error.message);
@@ -100,12 +118,37 @@ export class ProductsController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      const response = await this.client.send('delete_product', id).toPromise();
+      const response = await lastValueFrom(
+        this.client.send('delete_product', { id }),
+      );
       return response;
     } catch (error) {
       console.error('Error al eliminar el producto:', error.message);
       throw new HttpException(
         'Error deleting product: ' + error.message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  /**
+   * Endpoint para actualizar el precio de un producto.
+   * Publica un mensaje en NATS para el microservicio de productos.
+   * @param id - ID del producto.
+   * @param body - Contiene el nuevo precio.
+   * @returns Confirmación de actualización.
+   */
+  @Patch(':id/price')
+  async updatePrice(@Param('id') id: string, @Body() body: { price: number }) {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('update_product_price', { id, price: body.price }),
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al actualizar el precio del producto:', error.message);
+      throw new HttpException(
+        'Error updating product price: ' + error.message,
         HttpStatus.BAD_REQUEST,
       );
     }
