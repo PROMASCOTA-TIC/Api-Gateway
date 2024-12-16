@@ -4,3 +4,5 @@ export * from './dto/finance/get-by-range.dto';
 
 export * from './dto/finance/create-income.dto';
 export * from './dto/finance/get-by-range.dto';
+
+export * from './dto/shopping-cart/delete-shopping-cart.dto';
