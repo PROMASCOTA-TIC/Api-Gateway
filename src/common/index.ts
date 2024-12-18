@@ -14,3 +14,5 @@ export * from './dto/global/update-pet-owner.dto'
 export * from './dto/global/update-admin.dto';
 export * from './dto/global/update-user.dto';
 export * from './dto/global/login.dto';
+export * from './dto/pet/create-pet.dto';
+export * from './dto/pet/update-pet.dto';

@@ -10,9 +10,14 @@ import { CommissionsModule } from './commissions/commissions.module';
 import { TaxesModule } from './taxes/taxes.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { PetsModule } from './pets/pets.module';
 
 @Module({
-  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, UsersModule, AuthModule, ShoppingCartModule],
+  imports: [
+    NatsModule, 
+    ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, 
+    UsersModule, AuthModule, 
+    ShoppingCartModule, PetsModule],
 })
 export class AppModule {}
 console.log(envs);
