@@ -8,9 +8,10 @@ import { TransactionsModule } from './transactions/transaction.module';
 import { CommissionsModule } from './commissions/commissions.module';
 import { TaxesModule } from './taxes/taxes.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, UsersModule],
+  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, UsersModule, AuthModule],
 })
 export class AppModule {}
 console.log(envs);

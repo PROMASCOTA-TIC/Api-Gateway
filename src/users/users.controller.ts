@@ -11,7 +11,6 @@ export class UsersController {
 
   @Post('create-pet-owner')
   createPetOwner(@Body() createPetOwnerDto: CreatePetOwnerDto) {
-    console.log('createPetOwnerDto', createPetOwnerDto);
     return this.client.send('create_pet_owner', createPetOwnerDto);
   }
 
@@ -24,8 +23,9 @@ export class UsersController {
   }
 
   @Post('email')
-  findByEmil(@Body() email: string) {
-    return this.client.send('find_by_id', email);
+  findByEmail(@Body() email: string) {
+    console.log('email', email);
+    return this.client.send('find_by_email', email);
   }
 
   @Patch('update-pet-owner')

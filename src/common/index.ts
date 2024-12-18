@@ -12,3 +12,4 @@ export * from './dto/global/create-user.dto';
 export * from './dto/global/update-pet-owner.dto'
 export * from './dto/global/update-admin.dto';
 export * from './dto/global/update-user.dto';
+export * from './dto/global/login.dto';
