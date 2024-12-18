@@ -6,4 +6,9 @@ export * from './dto/finance/create-transaction.dto';
 export * from './dto/finance/update-transaction.dto';
 export * from './dto/finance/update-transfer.dto';
 export * from './dto/finance/create-tax.dto';
-export * from './dto/finance/calculate-commission.dto';	
+export * from './dto/finance/calculate-commission.dto';
+export * from './dto/global/create-pet-owner.dto';
+export * from './dto/global/create-user.dto';
+export * from './dto/global/update-pet-owner.dto'
+export * from './dto/global/update-admin.dto';
+export * from './dto/global/update-user.dto';

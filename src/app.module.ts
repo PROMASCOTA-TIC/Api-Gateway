@@ -7,9 +7,10 @@ import { FinancialReportModule } from './financial-report/financial-report.modul
 import { TransactionsModule } from './transactions/transaction.module';
 import { CommissionsModule } from './commissions/commissions.module';
 import { TaxesModule } from './taxes/taxes.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule],
+  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, UsersModule],
 })
 export class AppModule {}
 console.log(envs);
