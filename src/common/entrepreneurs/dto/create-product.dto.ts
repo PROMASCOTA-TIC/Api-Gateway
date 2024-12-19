@@ -38,6 +38,9 @@ export class CreateProductDto {
   @Type(() => Number)
   stock: number;
 
+  @IsString({ message: 'El nombre debe ser una cadena de texto válida.' })
+  name: string;
+
   @IsString({ message: 'La descripción debe ser una cadena de texto.' })
   @IsOptional()
   description?: string;

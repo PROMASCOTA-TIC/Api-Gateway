@@ -44,6 +44,10 @@ export class UpdateProductDto {
   @IsOptional()
   stock?: number;
 
+  @IsString({ message: 'El nombre debe ser una cadena de texto válida.' })
+  @IsOptional()
+  name?: string;
+
   @IsString({ message: 'La descripción debe ser una cadena de texto.' })
   @IsOptional()
   description?: string;

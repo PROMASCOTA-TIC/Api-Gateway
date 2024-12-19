@@ -3,6 +3,7 @@ import { NatsModule } from 'src/transports';
 import { OffersController } from './offers.controller';
 
 
+
 @Module({
   controllers: [OffersController],
   providers: [],
