@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, ParseUUIDPipe } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreatePetOwnerDto, UpdateAdminDto, UpdatePetOwnerDto } from 'src/common';
-import { NATS_SERVICE } from 'src/config';
+import { CreatePetOwnerDto } from 'src/common/dto/global/create-pet-owner.dto';
+import { UpdateAdminDto } from 'src/common/dto/global/update-admin.dto';
+import { UpdatePetOwnerDto } from 'src/common/dto/global/update-pet-owner.dto';
+import { NATS_SERVICE } from 'src/config/services';
+
 
 @Controller('users')
 export class UsersController {
