@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateIncomeDto, GetByDateRangeDto } from 'src/common';
-import { NATS_SERVICE } from 'src/config';
+import { CreateIncomeDto } from 'src/common/dto/finance/create-income.dto';
+import { GetByDateRangeDto } from 'src/common/dto/finance/get-by-range.dto';
+import { NATS_SERVICE } from 'src/config/services';
 
 @Controller('incomes')
 export class IncomesController {

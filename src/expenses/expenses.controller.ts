@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Inject, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateExpenseDto, GetByDateRangeDto, UpdateExpenseDto } from 'src/common';
-import { NATS_SERVICE } from 'src/config';
+import { CreateExpenseDto } from 'src/common/dto/finance/create-expense.dto';
+import { GetByDateRangeDto } from 'src/common/dto/finance/get-by-range.dto';
+import { UpdateExpenseDto } from 'src/common/dto/finance/update-expense.dto';
+import { NATS_SERVICE } from 'src/config/services';
 
 @Controller('expenses')
 export class ExpensesController {

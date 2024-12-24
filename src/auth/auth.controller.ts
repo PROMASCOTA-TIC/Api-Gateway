@@ -1,7 +1,10 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreatePetOwnerDto, LoginDto } from 'src/common';
-import { NATS_SERVICE } from 'src/config';
+import { CreatePetOwnerDto } from 'src/common/dto/global/create-pet-owner.dto';
+import { LoginDto } from 'src/common/dto/global/login.dto';
+import { NATS_SERVICE } from 'src/config/services';
+
+
 
 @Controller('auth')
 export class AuthController {

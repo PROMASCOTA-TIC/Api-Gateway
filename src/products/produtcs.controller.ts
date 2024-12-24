@@ -12,8 +12,9 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { CreateProductDto, UpdateProductDto } from 'src/common';
-import { NATS_SERVICE } from 'src/config';
+import { CreateProductDto } from 'src/common/entrepreneurs/dto/create-product.dto';
+import { UpdateProductDto } from 'src/common/entrepreneurs/dto/update-product.dto';
+import { NATS_SERVICE } from 'src/config/services';
 
 @Controller('products')
 export class ProductsController {

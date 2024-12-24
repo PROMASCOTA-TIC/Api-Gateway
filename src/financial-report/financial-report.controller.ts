@@ -1,7 +1,8 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { GetByDateRangeDto } from 'src/common';
-import { NATS_SERVICE } from 'src/config';
+import { GetByDateRangeDto } from 'src/common/dto/finance/get-by-range.dto';
+import { NATS_SERVICE } from 'src/config/services';
+
 
 @Controller('financial-report')
 export class FinancialReportController {
