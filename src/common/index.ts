@@ -16,3 +16,5 @@ export * from './dto/global/update-user.dto';
 export * from './dto/global/login.dto';
 export * from './dto/pet/create-pet.dto';
 export * from './dto/pet/update-pet.dto';
+export * from './dto/addresses/create-address.dto';
+export * from './dto/addresses/update-address.dto';

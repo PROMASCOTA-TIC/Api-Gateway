@@ -11,13 +11,14 @@ import { TaxesModule } from './taxes/taxes.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PetsModule } from './pets/pets.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   imports: [
     NatsModule, 
     ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, 
     UsersModule, AuthModule, 
-    ShoppingCartModule, PetsModule],
+    ShoppingCartModule, PetsModule, AddressesModule],
 })
 export class AppModule {}
 console.log(envs);
