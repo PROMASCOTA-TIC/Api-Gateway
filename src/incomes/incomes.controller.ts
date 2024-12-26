@@ -30,7 +30,7 @@ export class IncomesController {
   }
 
   @Get('weekly-sales/:id')
-  update(@Param()  entrepreneurId: string) {
+  getWeeklySales(@Param() entrepreneurId: string) {
     return this.client.send('get_weekly_sales', { entrepreneurId });
   }
 }
