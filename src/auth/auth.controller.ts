@@ -1,5 +1,6 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { CreateEntrepreneurDTO } from 'src/common/dto/global/create-entrepreneur.dto';
 import { CreatePetOwnerDto } from 'src/common/dto/global/create-pet-owner.dto';
 import { LoginDto } from 'src/common/dto/global/login.dto';
 import { NATS_SERVICE } from 'src/config/services';
@@ -23,8 +24,8 @@ export class AuthController {
   }
 
   //TODO: Implementar endopoint para registrar emprendedor (JP)
-  // @Post('register-entrepreneur')
-  // registerVet(@Body() createPetOwnerDto: CreatePetOwnerDto) {
-  //   return this.client.send('register', {createPetOwnerDto});
-  // }
+  @Post('register-entrepreneur')
+  registerEntrepreneur(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
+    return this.client.send('register-entrepreneur', createEntrepreneurDto);
+  }
 }

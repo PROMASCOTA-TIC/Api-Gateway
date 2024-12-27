@@ -21,9 +21,10 @@ export class UsersController {
   }
 
   //TODO: Implementar endpoint para crear emprendedor (JP)
-  @Post('entrepreneurs')
+  @Post('create-entrepreneur')
   async createEntrepreneur(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
     console.log('Request received in API Gateway:', createEntrepreneurDto);
+    console.log('Received data in Users:', createEntrepreneurDto);
     return lastValueFrom(
       this.client.send({ cmd: 'create_entrepreneur' }, createEntrepreneurDto),
     );
