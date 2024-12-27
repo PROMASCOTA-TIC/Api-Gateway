@@ -140,6 +140,36 @@ export class UsersController {
     return this.client.send(id, updateAdminDto);
   }
 
+  @Patch('entrepreneurs/:id/status-and-commission')
+  async updateEntrepreneurStatusAndCommission(
+    @Param('id') id: string,
+    @Body() body: { estado: 'PENDING' | 'APPROVED' | 'REJECTED'; comision?: number },
+  ) {
+    const { estado, comision } = body;
+  
+    if (estado === 'APPROVED' && comision === undefined) {
+      throw new HttpException(
+        'La comisión es requerida para el estado APPROVED.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  
+    if (comision !== undefined && (comision < 0 || comision > 100)) {
+      throw new HttpException(
+        'La comisión debe estar entre 0 y 100.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  
+    return lastValueFrom(
+      this.client.send(
+        { cmd: 'update_entrepreneur_status_and_commission' },
+        { id, estado, comision },
+      ),
+    );
+  }
+  
+
   // @Patch('update-entrepreneur')
   // updateEntrepreneur(
     
