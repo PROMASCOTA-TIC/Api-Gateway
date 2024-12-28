@@ -28,4 +28,10 @@ export class AuthController {
   registerEntrepreneur(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
     return this.client.send('register-entrepreneur', createEntrepreneurDto);
   }
+    // Endpoint para login de emprendedores
+    @Post('login-entrepreneur')
+    loginEntrepreneur(@Body() loginDto: LoginDto) {
+      return this.client.send('login-entrepreneur', loginDto);
+    }
+    
 }

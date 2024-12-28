@@ -171,10 +171,19 @@ export class UsersController {
   }
   
 
-  // @Patch('update-entrepreneur')
-  // updateEntrepreneur(
-    
-  // ) {
-  //   return this.client.send(id, updatePetOwnerDto);
-  // }
+  
+  @Post('find-entrepreneur-by-email')
+  async findEntrepreneurByEmail(@Body() data: { email: string }) {
+    console.log('Request received in API Gateway for entrepreneur email:', data?.email);
+
+    if (!data?.email) {
+      throw new Error('Email is required');
+    }
+
+    return lastValueFrom(
+      this.client.send('find_entrepreneur_by_email', { email: data.email }),
+    );
+  }
+
+  
 }
