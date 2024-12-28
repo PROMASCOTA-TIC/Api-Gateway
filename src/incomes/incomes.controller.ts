@@ -16,7 +16,7 @@ export class IncomesController {
 
   @Get()
   finAllIncomes() {
-    return this.client.send('find_all_incomes', {});
+    return this.client.send('find_all_sales', {});
   }
 
   @Post('date-range')
