@@ -4,7 +4,7 @@ import { IsDateString, IsIn, IsNumber, IsString, IsUUID, Min } from "class-valid
 export class CreateTransactionDto {
 
     @IsDateString()
-    settlementDate: Date;
+    transactionDate: Date;
 
     @IsUUID()
     entrepreneurId: string;
@@ -19,4 +19,10 @@ export class CreateTransactionDto {
     @Min(0)
     @Type(() => Number)
     amount: number
+
+    @IsString()
+    coment?: string;
+
+    @IsDateString()
+    paymentDate: Date;
 }
