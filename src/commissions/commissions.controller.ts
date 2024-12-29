@@ -1,6 +1,6 @@
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CalculateCommissionDto } from 'src/common/dto/finance/calculate-commission.dto';
+import { CalculateCommissionDto } from 'src/common';
 import { NATS_SERVICE } from 'src/config/services';
 
 

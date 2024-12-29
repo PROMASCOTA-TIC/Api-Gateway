@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateTaxDto } from 'src/common/dto/finance/create-tax.dto';
+import { CreateTaxDto } from 'src/common';
 import { NATS_SERVICE } from 'src/config/services';
 
 @Controller('taxes')

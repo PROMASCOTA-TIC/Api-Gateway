@@ -1,11 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, ParseUUIDPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { EmptyError, lastValueFrom } from 'rxjs';
+import { CreatePetOwnerDto, UpdateAdminDto, UpdatePetOwnerDto } from 'src/common';
 import { CreateEntrepreneurDTO } from 'src/common/dto/global/create-entrepreneur.dto';
-import { CreatePetOwnerDto } from 'src/common/dto/global/create-pet-owner.dto';
-import { UpdateAdminDto } from 'src/common/dto/global/update-admin.dto';
 import { UpdateEntrepreneurDTO } from 'src/common/dto/global/update-entrepreneur.dto';
-import { UpdatePetOwnerDto } from 'src/common/dto/global/update-pet-owner.dto';
 import { NATS_SERVICE } from 'src/config/services';
 
 
