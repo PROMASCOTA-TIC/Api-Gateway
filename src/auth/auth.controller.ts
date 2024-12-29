@@ -11,27 +11,40 @@ import { NATS_SERVICE } from 'src/config/services';
 export class AuthController {
   constructor(
     @Inject(NATS_SERVICE) private readonly client: ClientProxy,
-  ) {}
+  ) { }
 
-  @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.client.send('login', loginDto);
+  @Post('verify-token')
+  verifyToken(@Body() token: string) {
+    console.log('verify-token', token);
+    return this.client.send('verify-token', token);
+  }
+
+  @Post('login-admin')
+  loginAdmin(@Body() loginDto: LoginDto) {
+    console.log('login-admin', loginDto);
+    return this.client.send('login-admin', {...loginDto});
+  }
+
+  @Post('login-pet-owner')
+  loginPetOwner(@Body() loginDto: LoginDto) {
+    console.log('login-pet-owner', loginDto);
+    return this.client.send('login-pet-owner', {...loginDto});
   }
 
   @Post('register-pet-owner')
   registerPetOwner(@Body() createPetOwnerDto: CreatePetOwnerDto) {
-    return this.client.send('register-pet-owner', createPetOwnerDto);
+    const { ...rest} = createPetOwnerDto;
+    console.log('register-pet-owner', rest);
+    return this.client.send('register-pet-owner', {...createPetOwnerDto});
   }
 
-  //TODO: Implementar endopoint para registrar emprendedor (JP)
   @Post('register-entrepreneur')
   registerEntrepreneur(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
     return this.client.send('register-entrepreneur', createEntrepreneurDto);
   }
-    // Endpoint para login de emprendedores
-    @Post('login-entrepreneur')
-    loginEntrepreneur(@Body() loginDto: LoginDto) {
-      return this.client.send('login-entrepreneur', loginDto);
-    }
-    
+
+  @Post('login-entrepreneur')
+  loginEntrepreneur(@Body() loginDto: LoginDto) {
+    return this.client.send('login-entrepreneur', loginDto);
+  }
 }

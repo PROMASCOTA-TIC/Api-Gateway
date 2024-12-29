@@ -13,12 +13,6 @@ export class UsersController {
     @Inject(NATS_SERVICE) private readonly client: ClientProxy,
   ) { }
 
-  @Post('create-pet-owner')
-  createPetOwner(@Body() createPetOwnerDto: CreatePetOwnerDto) {
-    return this.client.send('create_pet_owner', createPetOwnerDto);
-  }
-
-  //TODO: Implementar endpoint para crear emprendedor (JP)
   @Post('create-entrepreneur')
   async createEntrepreneur(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
     console.log('Request received in API Gateway:', createEntrepreneurDto);
@@ -111,19 +105,28 @@ export class UsersController {
     );
   }
   
-
-  @Get(':id')
-  findById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.client.send('find_by_id', id);
+  @Post('create-pet-owner')
+  createPetOwner(@Body() createPetOwnerDto: CreatePetOwnerDto) {
+    return this.client.send('create_pet_owner', createPetOwnerDto);
   }
 
-  @Post('email')
-  findByEmail(@Body() email: string) {
-    console.log('email', email);
-    return this.client.send('find_by_email', email);
+  @Get('pet-owner/:id')
+  findPetOwnerById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.client.send('find_pet_owner_by_id', id);
   }
 
-  @Patch('update-pet-owner')
+  @Post('pet-owner-by-email')
+  findPetOwnerByEmail(@Body() email: string) {
+    console.log('Request received in API Gateway for pet owner email:', email);
+    return this.client.send('find_pet_owner_by_email', email);
+  }
+
+  @Delete('delete-pet-owner/:id')
+  deletePetOwner(@Param('id', ParseUUIDPipe) id: string) {
+    return this.client.send('delete_pet_owner', id);
+  }
+
+  @Patch('update-pet-owner/:id')
   updatePetOwner(
     @Param('id', ParseUUIDPipe) id: string, 
     @Body() updatePetOwnerDto: UpdatePetOwnerDto
@@ -131,12 +134,9 @@ export class UsersController {
     return this.client.send(id, updatePetOwnerDto);
   }
 
-  @Patch('update-admin')
-  updateAdmin(
-    @Param('id', ParseUUIDPipe) id: string, 
-    @Body() updateAdminDto: UpdateAdminDto
-  ) {
-    return this.client.send(id, updateAdminDto);
+  @Post('admin-by-email')
+  findAdminByEmail(@Body() email: string) {
+    return this.client.send('find_admin_by_email', email);
   }
 
   @Patch('entrepreneurs/:id/status-and-commission')
@@ -167,9 +167,7 @@ export class UsersController {
       ),
     );
   }
-  
 
-  
   @Post('find-entrepreneur-by-email')
   async findEntrepreneurByEmail(@Body() data: { email: string }) {
     console.log('Request received in API Gateway for entrepreneur email:', data?.email);
@@ -182,6 +180,4 @@ export class UsersController {
       this.client.send('find_entrepreneur_by_email', { email: data.email }),
     );
   }
-
-  
 }
