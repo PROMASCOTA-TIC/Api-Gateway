@@ -15,8 +15,13 @@ export class IncomesController {
   }
 
   @Get()
-  finAllIncomes() {
+  findAllSales() {
     return this.client.send('find_all_sales', {});
+  }
+
+  @Post('sales-date-range')
+  findSalesByDateRange(@Body() getSalesByDateRangeDto: GetByDateRangeDto) {
+    return this.client.send('find_sales_by_date_range', {...getSalesByDateRangeDto});
   }
 
   @Post('date-range')
