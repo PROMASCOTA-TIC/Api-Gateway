@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, ParseUUIDPipe, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, ParseUUIDPipe, HttpException, HttpStatus, BadRequestException, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { EmptyError, lastValueFrom } from 'rxjs';
 import { CreatePetOwnerDto, UpdateAdminDto, UpdatePetOwnerDto } from 'src/common';
 import { CreateEntrepreneurDTO } from 'src/common/dto/global/create-entrepreneur.dto';
+import { UpdateStatusAndCommissionDTO } from 'src/common/dto/global/update-comission-status.dto';
 import { UpdateEntrepreneurDTO } from 'src/common/dto/global/update-entrepreneur.dto';
 import { NATS_SERVICE } from 'src/config/services';
 
@@ -34,46 +35,6 @@ export class UsersController {
     );
   }
   
-  @Get('entrepreneurs/state/:estado')
-  async getEntrepreneursByState(@Param('estado') estado: 'PENDING' | 'APPROVED' | 'REJECTED') {
-    return lastValueFrom(
-      this.client.send({ cmd: 'get_entrepreneurs_by_state' }, estado),
-    );
-  }
-  
-  @Patch('entrepreneurs/:id')
-  async updateEntrepreneur(
-    @Param('id') id: string,
-    @Body() updateEntrepreneurDto: UpdateEntrepreneurDTO,
-  ) {
-    if (updateEntrepreneurDto.comision !== undefined) {
-      console.log(
-        `Updating commission for Entrepreneur ID ${id} with value ${updateEntrepreneurDto.comision}`,
-      );
-    }
-  
-    return lastValueFrom(
-      this.client.send(
-        { cmd: 'update_entrepreneur' },
-        { id, updateData: updateEntrepreneurDto },
-      ),
-    );
-  }
-  
-  @Patch('entrepreneurs/:id/commission')
-  async updateEntrepreneurCommission(
-    @Param('id') id: string,
-    @Body('comision') comision: number,
-  ) {
-    console.log(`Updating commission for Entrepreneur ID ${id} to ${comision}`);
-    return lastValueFrom(
-      this.client.send(
-        { cmd: 'update_entrepreneur_commission' },
-        { id, comision },
-      ),
-    );
-  }
-  
   @Delete('entrepreneurs/:id')
   async deleteEntrepreneurById(@Param('id') id: string) {
     try {
@@ -94,6 +55,60 @@ export class UsersController {
       );
     }
   }
+
+
+  
+  @Get('entrepreneurs/state/:estado')
+  async getEntrepreneursByState(@Param('estado') estado: string) {
+    if (!estado || !['PENDING', 'APPROVED', 'REJECTED'].includes(estado.toUpperCase())) {
+      throw new BadRequestException(`Estado inválido: ${estado}`);
+    }
+
+    // Utilizar `lastValueFrom` para obtener el resultado del observable
+    const result = await lastValueFrom(
+      this.client.send(
+        { cmd: 'get_entrepreneurs_by_state' },
+        estado.toUpperCase()
+      )
+    );
+
+    return result;
+  }
+
+  
+  @Patch('update-entrepreneur/:idEntrepreneur')
+  async updateEntrepreneur(
+    @Param('idEntrepreneur') idEntrepreneur: string,
+    @Body() updateEntrepreneurDto: UpdateEntrepreneurDTO,
+  ) {
+    updateEntrepreneurDto.idEntrepreneur = idEntrepreneur;
+
+    try {
+      return await this.client.send('update_entrepreneur', updateEntrepreneurDto).toPromise();
+    } catch (error) {
+      throw new HttpException(
+        error.response?.message || 'Error interno del servidor',
+        error.response?.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
+
+  @Patch('entrepreneurs/:id/commission')
+  async updateEntrepreneurCommission(
+    @Param('id') id: string,
+    @Body('comision') comision: number,
+  ) {
+    console.log(`Updating commission for Entrepreneur ID ${id} to ${comision}`);
+    return lastValueFrom(
+      this.client.send(
+        { cmd: 'update_entrepreneur_commission' },
+        { id, comision },
+      ),
+    );
+  }
+  
+  
   
   @Patch('entrepreneurs/:id/status')
   async updateEntrepreneurStatus(
@@ -140,33 +155,24 @@ export class UsersController {
   }
 
   @Patch('entrepreneurs/:id/status-and-commission')
-  async updateEntrepreneurStatusAndCommission(
+  async updateStatusAndCommission(
     @Param('id') id: string,
-    @Body() body: { estado: 'PENDING' | 'APPROVED' | 'REJECTED'; comision?: number },
+    @Body() updateStatusAndCommissionDTO: UpdateStatusAndCommissionDTO,
   ) {
-    const { estado, comision } = body;
-  
-    if (estado === 'APPROVED' && comision === undefined) {
-      throw new HttpException(
-        'La comisión es requerida para el estado APPROVED.',
-        HttpStatus.BAD_REQUEST,
-      );
+    if (!id) {
+      throw new BadRequestException('El ID del emprendedor es obligatorio');
     }
-  
-    if (comision !== undefined && (comision < 0 || comision > 100)) {
-      throw new HttpException(
-        'La comisión debe estar entre 0 y 100.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  
-    return lastValueFrom(
+
+    const result = await lastValueFrom(
       this.client.send(
         { cmd: 'update_entrepreneur_status_and_commission' },
-        { id, estado, comision },
+        { idEntrepreneur: id, updateStatusAndCommissionDTO },
       ),
     );
+
+    return result;
   }
+
 
   @Post('find-entrepreneur-by-email')
   async findEntrepreneurByEmail(@Body() data: { email: string }) {

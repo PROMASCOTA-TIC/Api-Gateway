@@ -1,32 +1,27 @@
 import {
   IsString,
-  IsEmail,
   IsArray,
   IsOptional,
   IsEnum,
-  Matches,
   MinLength,
   MaxLength,
   IsNumber,
   Min,
   Max,
   ValidateNested,
-  IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-// Clase para definir la estructura de cada objeto en el campo "horario"
 class HorarioDTO {
   @IsString({ message: 'El día debe ser un string válido' })
-  @IsNotEmpty({ message: 'El día no puede estar vacío' })
   dia: string;
 
   @IsOptional()
-  @IsString({ message: 'La hora de apertura debe ser un string válido' })
+  @IsString({ message: 'La hora de apertura debe ser un string' })
   horaApertura?: string;
 
   @IsOptional()
-  @IsString({ message: 'La hora de cierre debe ser un string válido' })
+  @IsString({ message: 'La hora de cierre debe ser un string' })
   horaCierre?: string;
 
   @IsOptional()
@@ -37,24 +32,7 @@ class HorarioDTO {
 export class UpdateEntrepreneurDTO {
   @IsOptional()
   @IsString()
-  id?: string;
-
-  @IsOptional()
-  @IsEmail({}, { message: 'El correo electrónico debe tener un formato válido' })
-  email?: string;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
-  @MaxLength(20, { message: 'La contraseña no puede exceder los 20 caracteres' })
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/, {
-    message: 'La contraseña debe incluir al menos una letra y un número',
-  })
-  password?: string;
-
-  @IsOptional()
-  @IsEnum(['1', '0'], { message: 'isEntrepreneur debe ser "1" (true) o "0" (false)' })
-  isEntrepreneur?: '1' | '0';
+  idEntrepreneur?: string;
 
   @IsOptional()
   @IsString()
@@ -92,11 +70,11 @@ export class UpdateEntrepreneurDTO {
   bancoNombreDuenoCuenta?: string;
 
   @IsOptional()
-  @IsEnum(['1', '0'], { message: 'realizaEnvios debe ser "1" (true) o "0" (false)' })
+  @IsEnum(['1', '0'], { message: 'realizaEnvios debe ser "1" o "0"' })
   realizaEnvios?: '1' | '0';
 
   @IsOptional()
-  @IsEnum(['1', '0'], { message: 'soloRetiraEnTienda debe ser "1" (true) o "0" (false)' })
+  @IsEnum(['1', '0'], { message: 'soloRetiraEnTienda debe ser "1" o "0"' })
   soloRetiraEnTienda?: '1' | '0';
 
   @IsOptional()
@@ -114,16 +92,12 @@ export class UpdateEntrepreneurDTO {
   horario?: HorarioDTO[];
 
   @IsOptional()
-  @IsArray({ message: 'Las fotos del local deben ser un arreglo de strings' })
+  @IsArray({ message: 'fotosLocal debe ser un arreglo de strings' })
   fotosLocal?: string[];
 
   @IsOptional()
-  @IsArray({ message: 'Las fotos del logotipo deben ser un arreglo de strings' })
+  @IsArray({ message: 'fotosLogotipo debe ser un arreglo de strings' })
   fotosLogotipo?: string[];
-
-  @IsOptional()
-  @IsEnum(['1', '0'], { message: 'aceptoTerminos debe ser "1" (true) o "0" (false)' })
-  aceptoTerminos?: '1' | '0';
 
   @IsOptional()
   @IsNumber({}, { message: 'La comisión debe ser un número válido' })

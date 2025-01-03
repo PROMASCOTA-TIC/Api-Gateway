@@ -45,6 +45,6 @@ export class AuthController {
 
   @Post('login-entrepreneur')
   loginEntrepreneur(@Body() loginDto: LoginDto) {
-    return this.client.send('login-entrepreneur', loginDto);
+    return this.client.send('login-entrepreneur', {...loginDto});
   }
 }
