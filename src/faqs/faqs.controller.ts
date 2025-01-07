@@ -23,8 +23,9 @@ export class FaqsController {
     @Get('search')
     async searchFaqs(@Query('query') query: string) {
         if (!query) {
-            throw new Error('Query parameter must be a valid string');
+            return { message: 'El parámetro query no fue enviado en la URL', query };
         }
+        console.log(`Valor recibido en el parámetro query: "${query}"`);
         return this.client.send('search_faqs', { query });
     }
 
@@ -37,11 +38,19 @@ export class FaqsController {
     }
 
     @Put('update/:faqId')
-    async updateFaq(@Param('faqId') faqId: string, @Body() updateFaqDto: UpdateFaqDto) {
-        if (!updateFaqDto) {
-            throw new BadRequestException('Debe proporcionar los datos de actualización.');
+    async updateFaq(
+        @Param('faqId') faqId: string,
+        @Body() updateFaqDto: Partial<UpdateFaqDto>,
+    ) {
+        if (!faqId) {
+            throw new BadRequestException('Debe proporcionar un "faqId".');
         }
-        return await lastValueFrom(this.client.send('update_faq', { faqId, ...updateFaqDto }));
+
+        if (!updateFaqDto || Object.keys(updateFaqDto).length === 0) {
+            throw new BadRequestException('Debe proporcionar al menos un campo en los datos de actualización.');
+        }
+
+        return this.client.send('update_faq', { faqId, updateFaqDto });
     }
 
     @Delete('delete/:faqId')
@@ -92,26 +101,38 @@ export class FaqsController {
     }
 
     /** Feedback */
+    // Crear feedback
     @Post('feedback/:faqId')
-    async registerFeedback(@Param('faqId') faqId: string, @Body() createFeedbackDto: CreateFeedbackDto) {
-        return this.client.send('register_feedback', { faqId, ...createFeedbackDto });
+    async registerFeedback(
+        @Param('faqId') faqId: string,
+        @Body() createFeedbackDto: CreateFeedbackDto,
+    ) {
+        if (!createFeedbackDto || Object.keys(createFeedbackDto).length === 0) {
+            throw new BadRequestException('El cuerpo de la solicitud no puede estar vacío');
+        }
+
+        return this.client.send('register_feedback', { faqId, createFeedbackDto });
     }
 
+    // Obtener estadísticas de feedback
     @Get('feedback/:faqId/stats')
     async getFeedbackStats(@Param('faqId') faqId: string) {
         return this.client.send('get_feedback_stats', { faqId });
     }
 
+    // Obtener resumen de feedback
     @Get('feedback/:faqId/summary')
     async getFeedbackSummary(@Param('faqId') faqId: string) {
         return this.client.send('get_feedback_summary', { faqId });
     }
 
+    // Obtener detalles de feedback
     @Get('feedback/:faqId/details')
     async getFeedbackDetails(@Param('faqId') faqId: string) {
         return this.client.send('get_feedback_details', { faqId });
     }
 
+    // Obtener detalles de feedback por ID
     @Get('feedback/details/:feedbackId')
     async getFeedbackById(@Param('feedbackId') feedbackId: string) {
         return this.client.send('get_feedback_by_id', { feedbackId });
