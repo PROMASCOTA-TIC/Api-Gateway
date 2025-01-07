@@ -154,4 +154,21 @@ export class ProductsController {
       );
     }
   }
+
+  @Get('/entrepreneur/:entrepreneurId')
+  async findAllByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_products_by_entrepreneur', entrepreneurId),
+      );
+      return response;
+    } catch (error) {
+      console.error(`Error al obtener productos del emprendedor con ID ${entrepreneurId}: ${error.message}`);
+      throw new HttpException(
+        `Error al obtener productos del emprendedor: ${error.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+  
 }
