@@ -26,6 +26,9 @@ export class LinksController {
   // Buscar enlaces por título
   @Get('search')
   async searchLinks(@Query('query') query: string) {
+    if (!query) {
+      throw new Error('Query parameter must be a valid string');
+    }
     return this.client.send('search_links', { query });
   }
 
@@ -126,7 +129,6 @@ export class LinksController {
 
     return result;
   }
-
 
   // Eliminar una categoría
   @Delete('categories/delete/:id')

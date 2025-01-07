@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { CreateAdvertorialDto } from 'src/common/dto/contentManagment/advertorials/create-advertorial.dto';
 import { CreateCategoryDto } from 'src/common/dto/contentManagment/advertorials/create-category.dto';
 import { UpdateAdvertorialDto } from 'src/common/dto/contentManagment/advertorials/update-advertorial.dto';
@@ -16,7 +17,7 @@ export class AdvertorialsController {
     /** PUBLIREPORTAJES **/
 
     // Obtener todos los publireportajes
-    @Get()
+    @Get('all')
     async getAllAdvertorials() {
         return this.client.send('get_all_advertorials', {});
     }
@@ -31,34 +32,37 @@ export class AdvertorialsController {
     }
 
     // Crear un nuevo publireportaje
-    @Post()
+    @Post('create')
     async createAdvertorial(@Body() createAdvertorialDto: CreateAdvertorialDto) {
-        return this.client.send('create_advertorial', {...createAdvertorialDto});
+        if (!createAdvertorialDto.ownerName || !createAdvertorialDto.title || !createAdvertorialDto.description || !createAdvertorialDto.sourceLink) {
+            throw new Error('Faltan campos obligatorios en la creación del enlace');
+        }
+        return this.client.send('create_advertorial', { ...createAdvertorialDto });
     }
 
     // Actualizar un publireportaje existente
-    @Put(':advertorialId')
-    async updateAdvertorial(
-        @Param('advertorialId') advertorialId: string,
-        @Body() updateAdvertorialDto: UpdateAdvertorialDto,
-    ) {
-        return this.client.send('update_advertorial', { advertorialId, ...updateAdvertorialDto});
+    @Put('update/:advertorialId')
+    async updateAdvertorial(@Param('advertorialId') advertorialId: string, @Body() updateAdvertorialDto: UpdateAdvertorialDto,) {
+        if (!updateAdvertorialDto) {
+            throw new BadRequestException('Debe proporcionar los datos de actualización.');
+        }
+        return await lastValueFrom(this.client.send('update_advertorial', { advertorialId, updateAdvertorialDto }));
     }
 
     // Eliminar un publireportaje
-    @Delete(':advertorialId')
+    @Delete('delete/:advertorialId')
     async deleteAdvertorial(@Param('advertorialId') advertorialId: string) {
         return this.client.send('delete_advertorial', { advertorialId });
     }
 
     // Actualizar el estado de un publireportaje
-    @Put(':advertorialId/status')
+    @Put('update-status/:advertorialId/')
     async updateAdvertorialStatus(
         @Param('advertorialId') advertorialId: string,
         @Body('status') status: 'approved' | 'rejected',
     ) {
         if (!['approved', 'rejected'].includes(status)) {
-            throw new Error('Invalid status value');
+            throw new Error('Estado inválido: debe ser "approved" o "rejected"');
         }
         return this.client.send('update_advertorial_status', { advertorialId, status });
     }
@@ -73,43 +77,65 @@ export class AdvertorialsController {
     }
 
     // Obtener un publireportaje por advertorialId
-    @Get(':advertorialId')
+    @Get('detail/:advertorialId')
     async getAdvertorialById(@Param('advertorialId') advertorialId: string) {
         return this.client.send('get_advertorial_by_id', { advertorialId });
     }
 
     // Programar la publicación de un publireportaje
-    @Post(':advertorialId/schedule')
+    @Post('schedule/:advertorialId')
     async schedulePublication(
         @Param('advertorialId') advertorialId: string,
-        @Body('publishDate') publishDate: Date,
-    ) {
-        return this.client.send('schedule_advertorial_publication', { advertorialId, publishDate });
+        @Body('publishDate') publishDate: Date) {
+        if (!publishDate) {
+            throw new Error('Debe proporcionarse una fecha de publicación');
+        }
+
+        try {
+            const response = await lastValueFrom(
+                this.client.send('schedule_advertorial_publication', { advertorialId, publishDate })
+            );
+            return response;
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Error al programar la publicación',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /************************************************************************************/
     /** CATEGORÍAS **/
 
     // Obtener todas las categorías
-    @Get('categories')
+    @Get('categories/all')
     async getAllCategories() {
         return this.client.send('get_all_categories', {});
     }
 
     // Crear una nueva categoría
-    @Post('categories')
+    @Post('categories/create')
     async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
-        return this.client.send('create_category', {...createCategoryDto});
+        if (!createCategoryDto.name) {
+            throw new Error('El nombre de la categoría es obligatorio');
+        }
+        return this.client.send('create_category', { ...createCategoryDto });
     }
 
     // Actualizar una categoría existente
-    @Put('categories/:id')
+    @Put('categories/update/:id')
     async updateCategory(@Param('id') id: number, @Body() updateCategoryDto: UpdateCategoryDto) {
-        return this.client.send('update_category', { id, ...updateCategoryDto });
+        const result = await this.client.send('update_category', { id, updateCategoryDto }).toPromise();
+
+        if (!result) {
+            throw new Error('No se recibió respuesta del microservicio.');
+        }
+
+        return result;
     }
 
     // Eliminar una categoría
-    @Delete('categories/:id')
+    @Delete('categories/delete/:id')
     async deleteCategory(@Param('id') id: number) {
         return this.client.send('delete_category', { id });
     }
