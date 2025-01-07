@@ -11,9 +11,16 @@ import { TransactionsModule } from './transactions/transaction.module';
 import { CommissionsModule } from './commissions/commissions.module';
 import { TaxesModule } from './taxes/taxes.module';
 import { OffersModule } from './offers/offers.module';
+import { FaqsModule } from './faqs/faqs.module';
+import { AdvertorialsModule } from './advertorials/advertorials.module';
+import { LinksModule } from './links_of_interest/links.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
-  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, UsersModule, AuthModule, ProductsModule,OffersModule],
+  imports: [NatsModule, ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, UsersModule, AuthModule, ProductsModule, OffersModule, 
+    FaqsModule, AdvertorialsModule, LinksModule, ChatbotModule
+  ],
 })
+
 export class AppModule {}
 console.log(envs);
