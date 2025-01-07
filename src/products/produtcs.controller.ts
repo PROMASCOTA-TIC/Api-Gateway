@@ -22,12 +22,7 @@ export class ProductsController {
     @Inject(NATS_SERVICE) private readonly client: ClientProxy,
   ) {}
 
-  /**
-   * Endpoint para crear un nuevo producto.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param createProductDto - Datos para crear el producto.
-   * @returns El producto creado.
-   */
+
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     try {
@@ -44,11 +39,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para obtener todos los productos.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @returns Lista de productos.
-   */
+
   @Get()
   async findAll() {
     try {
@@ -65,12 +56,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para obtener un producto por ID.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @returns El producto encontrado.
-   */
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -87,13 +73,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para actualizar un producto por ID.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @param updateProductDto - Datos para actualizar el producto.
-   * @returns El producto actualizado.
-   */
+  
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     try {
@@ -110,12 +90,6 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para eliminar un producto por ID.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @returns Una confirmación de eliminación.
-   */
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
@@ -132,13 +106,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para actualizar el precio de un producto.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @param body - Contiene el nuevo precio.
-   * @returns Confirmación de actualización.
-   */
+
   @Patch(':id/price')
   async updatePrice(@Param('id') id: string, @Body() body: { price: number }) {
     try {
