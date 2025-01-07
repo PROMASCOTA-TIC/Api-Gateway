@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject, BadRequestException, Patch, HttpStatus, Res, HttpException } from '@nestjs/common';
+import { Response } from 'express';
 import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { CreateCategoryDto } from 'src/common/dto/contentManagment/advertorials/create-category.dto';
 import { UpdateCategoryDto } from 'src/common/dto/contentManagment/faqs/update-category.dto';
 import { CreateLinkDto } from 'src/common/dto/contentManagment/links_of_interest/create-link.dto';
@@ -11,11 +13,12 @@ export class LinksController {
   constructor(
     @Inject(NATS_SERVICE) private readonly client: ClientProxy,
   ) { }
+
   /************************************************************************************/
   /** ENLACES **/
 
   // Obtener todos los enlaces
-  @Get()
+  @Get('all')
   async getAllLinks() {
     return this.client.send('get_all_links', {});
   }
@@ -27,28 +30,31 @@ export class LinksController {
   }
 
   // Crear un nuevo enlace
-  @Post()
+  @Post('create')
   async createLink(@Body() createLinkDto: CreateLinkDto) {
-    if (!createLinkDto.linkId || !createLinkDto.ownerName || !createLinkDto.title || !createLinkDto.description || !createLinkDto.sourceLink) {
+    if (!createLinkDto.ownerName || !createLinkDto.title || !createLinkDto.description || !createLinkDto.sourceLink) {
       throw new Error('Faltan campos obligatorios en la creación del enlace');
     }
     return this.client.send('create_link', { ...createLinkDto });
   }
 
   // Actualizar un enlace existente
-  @Put(':linkId')
+  @Put('update/:linkId')
   async updateLink(@Param('linkId') linkId: string, @Body() updateLinkDto: UpdateLinkDto) {
-    return this.client.send('update_link', { linkId, ...updateLinkDto });
+    if (!updateLinkDto) {
+      throw new BadRequestException('Debe proporcionar los datos de actualización.');
+    }
+    return await lastValueFrom(this.client.send('update_link', { linkId, updateLinkDto }));
   }
 
   // Eliminar un enlace
-  @Delete(':linkId')
+  @Delete('delete/:linkId')
   async deleteLink(@Param('linkId') linkId: string) {
     return this.client.send('delete_link', { linkId });
   }
 
   // Actualizar el estado de un enlace
-  @Put(':linkId/status')
+  @Patch('update-status/:linkId')
   async updateLinkStatus(@Param('linkId') linkId: string, @Body('status') status: 'approved' | 'rejected') {
     if (!['approved', 'rejected'].includes(status)) {
       throw new Error('Estado inválido: debe ser "approved" o "rejected"');
@@ -66,31 +72,42 @@ export class LinksController {
   }
 
   // Obtener un enlace por ID
-  @Get(':linkId')
+  @Get('detail/:linkId')
   async getLinkById(@Param('linkId') linkId: string) {
     return this.client.send('get_link_by_id', { linkId });
   }
 
   // Programar la publicación de un enlace
-  @Post(':linkId/schedule')
+  @Post('schedule/:linkId')
   async schedulePublication(@Param('linkId') linkId: string, @Body('publishDate') publishDate: Date) {
     if (!publishDate) {
       throw new Error('Debe proporcionarse una fecha de publicación');
     }
-    return this.client.send('schedule_link_publication', { linkId, publishDate });
+
+    try {
+      const response = await lastValueFrom(
+        this.client.send('schedule_link_publication', { linkId, publishDate })
+      );
+      return response;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Error al programar la publicación',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
   }
 
   /************************************************************************************/
   /** CATEGORIAS **/
 
   // Obtener todas las categorías
-  @Get('categories')
+  @Get('categories/all')
   async getAllCategories() {
     return this.client.send('get_all_categories', {});
   }
 
   // Crear una nueva categoría
-  @Post('categories')
+  @Post('categories/create')
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     if (!createCategoryDto.name) {
       throw new Error('El nombre de la categoría es obligatorio');
@@ -99,13 +116,20 @@ export class LinksController {
   }
 
   // Actualizar una categoría existente
-  @Put('categories/:id')
+  @Put('categories/update/:id')
   async updateCategory(@Param('id') id: number, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.client.send('update_category', { id, ...updateCategoryDto });
+    const result = await this.client.send('update_category', { id, updateCategoryDto }).toPromise();
+
+    if (!result) {
+      throw new Error('No se recibió respuesta del microservicio.');
+    }
+
+    return result;
   }
 
+
   // Eliminar una categoría
-  @Delete('categories/:id')
+  @Delete('categories/delete/:id')
   async deleteCategory(@Param('id') id: number) {
     return this.client.send('delete_category', { id });
   }
@@ -117,17 +141,25 @@ export class LinksController {
   }
 
   /************************************************************************************/
-  /** DESCARGAR ENLACES EN PDF **/
+  // Descargar enlace como PDF
+  @Get('download/:linkId/pdf')
+  async downloadLinkAsPDF(@Param('linkId') linkId: string, @Res() res: Response) {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('download_pdf', { linkId })
+      );
 
-  @Get(':linkId/download-pdf')
-  async downloadLinkAsPDF(@Param('linkId') linkId: string) {
-    const pdfResponse = await this.client.send('download_link_as_pdf', { linkId }).toPromise();
-    if (!pdfResponse || !pdfResponse.pdfBuffer) {
-      throw new Error('No se pudo generar el PDF');
+      if (response.status !== 200) {
+        throw new HttpException(response.message || 'Error al generar PDF', HttpStatus.BAD_REQUEST);
+      }
+
+      // Enviar el PDF como respuesta
+      const pdfBuffer = Buffer.from(response.data, 'base64'); // Decodificar el PDF desde Base64
+      res.setHeader('Content-Type', response.contentType);
+      res.setHeader('Content-Disposition', `attachment; filename="${response.filename}"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      throw new HttpException(error.message || 'Error interno del servidor', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return {
-      filename: pdfResponse.filename,
-      pdfBuffer: pdfResponse.pdfBuffer,
-    };
   }
 }

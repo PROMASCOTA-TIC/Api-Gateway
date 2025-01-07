@@ -1,10 +1,6 @@
 import { IsOptional, IsString, IsUrl, IsNumber, IsUUID, IsNotEmpty, IsDate } from 'class-validator';
 
 export class UpdateLinkDto {
-  @IsUUID()
-  @IsNotEmpty()
-  linkId: string; // ID del enlace
-
   @IsOptional()
   @IsNumber()
   categoryId: number; // ID de la categoría asociada
@@ -25,7 +21,7 @@ export class UpdateLinkDto {
   @IsDate()
   publishDate?: Date; // Campo para la fecha de publicación
 
+  @IsOptional()
   @IsUrl()
-  @IsNotEmpty()
   imagesUrl: string; //Enlace de imagenes
 }
