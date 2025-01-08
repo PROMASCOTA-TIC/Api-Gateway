@@ -4,6 +4,9 @@ export class CreateOfferDto {
   @IsUUID('4', { message: 'El ID del producto debe ser un UUID válido.' })
   productId: string;
 
+  @IsUUID('4', { message: 'El ID del emprendedor debe ser un UUID válido.' })
+  entrepreneurId: string;
+  
   @IsDateString({}, { message: 'La fecha de inicio debe ser una fecha válida (formato ISO 8601).' })
   startDate: string;
 
