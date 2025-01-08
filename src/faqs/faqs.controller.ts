@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject, BadRequestException, Patch } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
 import { CreateCategoryDto } from 'src/common/dto/contentManagment/advertorials/create-category.dto';
 import { CreateFaqDto } from 'src/common/dto/contentManagment/faqs/create-faq.dto';
 import { CreateFeedbackDto } from 'src/common/dto/contentManagment/faqs/create-feedback.dto';
+
 import { UpdateCategoryDto } from 'src/common/dto/contentManagment/faqs/update-category.dto';
 import { UpdateFaqDto } from 'src/common/dto/contentManagment/faqs/update-faq.dto';
+import { UpdateFeedbackDto } from 'src/common/dto/contentManagment/faqs/update-feedback.dto';
 import { NATS_SERVICE } from 'src/config/services';
 
 @Controller('faqs')
@@ -110,8 +111,18 @@ export class FaqsController {
         if (!createFeedbackDto || Object.keys(createFeedbackDto).length === 0) {
             throw new BadRequestException('El cuerpo de la solicitud no puede estar vacío');
         }
-
         return this.client.send('register_feedback', { faqId, createFeedbackDto });
+    }
+
+    @Patch('feedback/:feedbackId')
+    async updateFeedback(
+        @Param('feedbackId') feedbackId: string,
+        @Body() updateFeedbackDto: UpdateFeedbackDto,
+    ) {
+        if (!updateFeedbackDto || Object.keys(updateFeedbackDto).length === 0) {
+            throw new BadRequestException('Debe proporcionar al menos un campo para actualizar');
+        }
+        return this.client.send('update_feedback', { feedbackId, updateFeedbackDto });
     }
 
     // Obtener estadísticas de feedback
