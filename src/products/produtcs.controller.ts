@@ -139,4 +139,69 @@ export class ProductsController {
     }
   }
   
+
+  @Get('/register/pet-types')
+  async getPetTypes() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_pet_types', {}), // Asegúrate de usar el nuevo patrón aquí
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener los tipos de mascota:', error.message);
+      throw new HttpException(
+        `Error retrieving pet types: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/register/categories')
+  async getCategories() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_categories', {}), // Asegúrate de usar el nuevo patrón aquí
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener las categorías:', error.message);
+      throw new HttpException(
+        `Error retrieving categories: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/register/sub-categories')
+  async getSubCategories() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_subcategories', {}),
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener las subcategorías:', error.message);
+      throw new HttpException(
+        `Error retrieving subcategories: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/register/sizes')
+  async getSizes() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_sizes', {}),
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener los tamaños:', error.message);
+      throw new HttpException(
+        `Error retrieving sizes: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  
 }
