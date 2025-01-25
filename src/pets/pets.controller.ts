@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Req, UploadedFiles, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
 import { NATS_SERVICE } from 'src/config';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreatePetDto, UpdatePetDto } from 'src/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('pets')
 export class PetsController {
@@ -11,12 +10,10 @@ export class PetsController {
   ) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
   create(
     @Body() createPetDto: CreatePetDto,
-    @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return this.client.send('create_pet', { createPetDto, files: files });
+    return this.client.send('create_pet', { createPetDto });
   }
 
   @Get()

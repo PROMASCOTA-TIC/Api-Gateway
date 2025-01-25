@@ -14,13 +14,14 @@ import { TaxesModule } from './taxes/taxes.module';
 import { OffersModule } from './offers/offers.module';
 import { PetsModule } from './pets/pets.module';
 import { AddressesModule } from './addresses/addresses.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
     NatsModule, 
     ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, 
     UsersModule, AuthModule, 
-    ShoppingCartModule, PetsModule, AddressesModule, 
+    ShoppingCartModule, PetsModule, AddressesModule, PaymentsModule,
     ProductsModule,OffersModule],
 })
 export class AppModule {}
