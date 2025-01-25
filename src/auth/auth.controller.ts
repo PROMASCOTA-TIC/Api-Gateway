@@ -21,7 +21,6 @@ export class AuthController {
 
   @Post('login-admin')
   loginAdmin(@Body() loginDto: LoginDto) {
-    console.log('login-admin', loginDto);
     return this.client.send('login-admin', {...loginDto});
   }
 
