@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, ParseUUIDPipe } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateTransactionDto, UpdateTransactionDto, UpdateTransferDto } from 'src/common';
-import { NATS_SERVICE } from 'src/config';
+import { NATS_SERVICE } from 'src/config/services';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -10,8 +10,8 @@ export class TransactionsController {
   ) {}
 
   @Post()
-  createEntrepreneurPayment(@Body() createSettlementDto: CreateTransactionDto) {
-    return this.client.send('create_entrepreneur_payment', createSettlementDto);
+  createEntrepreneurPayment(@Body() createTransactionDto: CreateTransactionDto) {
+    return this.client.send('create_entrepreneur_payment', { ...createTransactionDto });
   }
 
   @Get()
@@ -29,14 +29,13 @@ export class TransactionsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrasferDto: UpdateTransferDto
   ) {
-    return this.client.send('validate_transfer', {id, updateTrasferDto});
+    return this.client.send('validate_transfer', { id, ...updateTrasferDto });
   }
 
   @Patch(':id')
   updateEntrepreneurPayment(
     @Param('id', ParseUUIDPipe) id: string, 
     @Body() updateTransactionDto: UpdateTransactionDto) {
-      console.log('updateTransactionDto', updateTransactionDto);
     return this.client.send('update_entrepreneur_payment', { id, ...updateTransactionDto });
   }  
 }
