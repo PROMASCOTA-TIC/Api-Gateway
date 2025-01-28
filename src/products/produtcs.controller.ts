@@ -8,7 +8,8 @@ import {
   Delete, 
   Patch, 
   HttpException, 
-  HttpStatus 
+  HttpStatus, 
+  Logger
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -21,6 +22,8 @@ export class ProductsController {
   constructor(
     @Inject(NATS_SERVICE) private readonly client: ClientProxy,
   ) {}
+
+  private readonly logger = new Logger(ProductsController.name);
 
 
   @Post()
@@ -203,5 +206,37 @@ export class ProductsController {
       );
     }
   }
+
+  
+  @Get('edit/:id')
+  async getProductForEdit(@Param('id') id: string) {
+    this.logger.log(`Llamada recibida para obtener el producto con ID: ${id} para edición`);
+    try {
+      // Llamar al microservicio con el patrón correspondiente
+      const product = await lastValueFrom(
+        this.client.send('get_product_for_edit', id),
+      );
+
+      if (!product) {
+        this.logger.warn(`Producto no encontrado para el ID: ${id}`);
+        throw new HttpException(
+          `Producto con ID ${id} no encontrado.`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      this.logger.log(`Producto obtenido correctamente para edición con ID: ${id}`);
+      return product;
+    } catch (error) {
+      this.logger.error(
+        `Error al obtener el producto para edición con ID ${id}: ${error.message}`,
+      );
+      throw new HttpException(
+        `Error al obtener el producto: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   
 }
