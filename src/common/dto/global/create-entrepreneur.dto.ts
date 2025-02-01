@@ -99,14 +99,14 @@ export class CreateEntrepreneurDTO extends CreateUserDto {
   @Type(() => HorarioDTO)
   horario: HorarioDTO[];
 
-  @IsArray({ message: 'Las fotos del local deben ser un arreglo de strings' })
-  @IsOptional()
-  fotosLocal: string[];
+  @IsArray({ message: 'fotosLocal debe ser un arreglo de strings' })
+  @IsString({ each: true })
+  fotosLocal?: string;
 
-  @IsArray({ message: 'Las fotos del logotipo deben ser un arreglo de strings' })
-  @IsOptional()
-  fotosLogotipo: string[];
-
+  @IsArray({ message: 'fotosLogotipo debe ser un arreglo de strings' })
+  @IsString({ each: true })
+  fotosLogotipo?: string;
+  
   @IsEnum(['1', '0'], { message: 'aceptoTerminos debe ser "1" (true) o "0" (false)' })
   aceptoTerminos: '1' | '0';
 

@@ -104,14 +104,17 @@ export class UpdateEntrepreneurDTO {
   @Type(() => HorarioDTO)
   horario?: HorarioDTO[];
 
-  @IsOptional()
   @IsArray({ message: 'fotosLocal debe ser un arreglo de strings' })
-  fotosLocal?: string[];
-
+  @IsString({ each: true })
   @IsOptional()
-  @IsArray({ message: 'fotosLogotipo debe ser un arreglo de strings' })
-  fotosLogotipo?: string[];
+  fotosLocal?: string;
 
+  @IsArray({ message: 'fotosLogotipo debe ser un arreglo de strings' })
+  @IsString({ each: true })
+  @IsOptional()
+  fotosLogotipo?: string;
+
+  
   @IsOptional()
   @IsNumber({}, { message: 'La comisión debe ser un número válido' })
   @Min(0, { message: 'La comisión no puede ser menor a 0' })
