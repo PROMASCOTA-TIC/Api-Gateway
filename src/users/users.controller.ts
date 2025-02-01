@@ -77,21 +77,30 @@ export class UsersController {
 
   
   @Patch('update-entrepreneur/:idEntrepreneur')
-  async updateEntrepreneur(
-    @Param('idEntrepreneur') idEntrepreneur: string,
-    @Body() updateEntrepreneurDto: UpdateEntrepreneurDTO,
-  ) {
-    updateEntrepreneurDto.idEntrepreneur = idEntrepreneur;
+async updateEntrepreneur(
+  @Param('idEntrepreneur') idEntrepreneur: string,
+  @Body() updateEntrepreneurDto: UpdateEntrepreneurDTO,
+) {
+  updateEntrepreneurDto.idEntrepreneur = idEntrepreneur;
 
-    try {
-      return await this.client.send('update_entrepreneur', updateEntrepreneurDto).toPromise();
-    } catch (error) {
-      throw new HttpException(
-        error.response?.message || 'Error interno del servidor',
-        error.response?.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  const { callePrincipal, calleSecundaria, numeracion, referencia } = updateEntrepreneurDto;
+
+  // Validar que si se actualiza la dirección, todos los campos sean proporcionados
+  if ((callePrincipal || calleSecundaria || numeracion || referencia) &&
+      (!callePrincipal || !calleSecundaria || !numeracion || !referencia)) {
+    throw new BadRequestException('Si se actualiza la dirección, todos sus campos deben ser proporcionados.');
   }
+
+  try {
+    return await this.client.send('update_entrepreneur', updateEntrepreneurDto).toPromise();
+  } catch (error) {
+    throw new HttpException(
+      error.response?.message || 'Error interno del servidor',
+      error.response?.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
+
   
 
   @Patch('entrepreneurs/:id/commission')

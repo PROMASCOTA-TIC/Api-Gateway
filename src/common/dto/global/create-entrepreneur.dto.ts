@@ -14,7 +14,6 @@ import {
 import { Type } from 'class-transformer';
 import { CreateUserDto } from './create-user.dto';
 
-// Clase para definir la estructura de cada objeto en el campo "horario"
 class HorarioDTO {
   @IsString({ message: 'El día debe ser un string válido' })
   @IsNotEmpty({ message: 'El día no puede estar vacío' })
@@ -33,8 +32,7 @@ class HorarioDTO {
   cerrado?: '1' | '0';
 }
 
-export class CreateEntrepreneurDTO  extends CreateUserDto   {
- 
+export class CreateEntrepreneurDTO extends CreateUserDto {
   @IsString()
   @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
   @MinLength(5, { message: 'El nombre debe tener al menos 5 caracteres' })
@@ -75,9 +73,22 @@ export class CreateEntrepreneurDTO  extends CreateUserDto   {
   @IsEnum(['1', '0'], { message: 'soloRetiraEnTienda debe ser "1" (true) o "0" (false)' })
   soloRetiraEnTienda: '1' | '0';
 
+  // Nueva estructura de dirección
   @IsString()
-  @IsNotEmpty({ message: 'La dirección local no puede estar vacía' })
-  direccionLocal: string;
+  @IsNotEmpty({ message: 'La calle principal no puede estar vacía' })
+  callePrincipal: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'La calle secundaria no puede estar vacía' })
+  calleSecundaria: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'La numeración no puede estar vacía' })
+  numeracion: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'La referencia no puede estar vacía' })
+  referencia: string;
 
   @IsString()
   @IsNotEmpty({ message: 'El sector local no puede estar vacío' })
