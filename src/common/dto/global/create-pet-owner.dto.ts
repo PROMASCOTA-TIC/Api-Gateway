@@ -6,7 +6,7 @@ export class CreatePetOwnerDto extends CreateUserDto {
     name: string
 
     @IsString()
-    urlPhoto: string
+    urlPhoto?: string
 
     @IsArray()
     @IsString({each: true})
@@ -21,5 +21,5 @@ export class CreatePetOwnerDto extends CreateUserDto {
 
     @IsArray()
     @IsString({each: true})
-    address: string[]
+    addresses?: string[]
 }
