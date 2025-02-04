@@ -8,7 +8,8 @@ import {
   Delete, 
   Patch, 
   HttpException, 
-  HttpStatus 
+  HttpStatus, 
+  Logger
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -22,12 +23,9 @@ export class ProductsController {
     @Inject(NATS_SERVICE) private readonly client: ClientProxy,
   ) {}
 
-  /**
-   * Endpoint para crear un nuevo producto.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param createProductDto - Datos para crear el producto.
-   * @returns El producto creado.
-   */
+  private readonly logger = new Logger(ProductsController.name);
+
+
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     try {
@@ -44,11 +42,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para obtener todos los productos.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @returns Lista de productos.
-   */
+
   @Get()
   async findAll() {
     try {
@@ -65,12 +59,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para obtener un producto por ID.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @returns El producto encontrado.
-   */
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -87,13 +76,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para actualizar un producto por ID.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @param updateProductDto - Datos para actualizar el producto.
-   * @returns El producto actualizado.
-   */
+  
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     try {
@@ -110,12 +93,6 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para eliminar un producto por ID.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @returns Una confirmación de eliminación.
-   */
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
@@ -132,13 +109,7 @@ export class ProductsController {
     }
   }
 
-  /**
-   * Endpoint para actualizar el precio de un producto.
-   * Publica un mensaje en NATS para el microservicio de productos.
-   * @param id - ID del producto.
-   * @param body - Contiene el nuevo precio.
-   * @returns Confirmación de actualización.
-   */
+
   @Patch(':id/price')
   async updatePrice(@Param('id') id: string, @Body() body: { price: number }) {
     try {
@@ -154,4 +125,118 @@ export class ProductsController {
       );
     }
   }
+
+  @Get('/entrepreneur/:entrepreneurId')
+  async findAllByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_products_by_entrepreneur', entrepreneurId),
+      );
+      return response;
+    } catch (error) {
+      console.error(`Error al obtener productos del emprendedor con ID ${entrepreneurId}: ${error.message}`);
+      throw new HttpException(
+        `Error al obtener productos del emprendedor: ${error.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+  
+
+  @Get('/register/pet-types')
+  async getPetTypes() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_pet_types', {}), // Asegúrate de usar el nuevo patrón aquí
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener los tipos de mascota:', error.message);
+      throw new HttpException(
+        `Error retrieving pet types: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/register/categories')
+  async getCategories() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_categories', {}), // Asegúrate de usar el nuevo patrón aquí
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener las categorías:', error.message);
+      throw new HttpException(
+        `Error retrieving categories: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/register/sub-categories')
+  async getSubCategories() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_subcategories', {}),
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener las subcategorías:', error.message);
+      throw new HttpException(
+        `Error retrieving subcategories: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/register/sizes')
+  async getSizes() {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_sizes', {}),
+      );
+      return response;
+    } catch (error) {
+      console.error('Error al obtener los tamaños:', error.message);
+      throw new HttpException(
+        `Error retrieving sizes: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  
+  @Get('edit/:id')
+  async getProductForEdit(@Param('id') id: string) {
+    this.logger.log(`Llamada recibida para obtener el producto con ID: ${id} para edición`);
+    try {
+      // Llamar al microservicio con el patrón correspondiente
+      const product = await lastValueFrom(
+        this.client.send('get_product_for_edit', id),
+      );
+
+      if (!product) {
+        this.logger.warn(`Producto no encontrado para el ID: ${id}`);
+        throw new HttpException(
+          `Producto con ID ${id} no encontrado.`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      this.logger.log(`Producto obtenido correctamente para edición con ID: ${id}`);
+      return product;
+    } catch (error) {
+      this.logger.error(
+        `Error al obtener el producto para edición con ID ${id}: ${error.message}`,
+      );
+      throw new HttpException(
+        `Error al obtener el producto: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  
 }
