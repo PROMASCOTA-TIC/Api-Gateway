@@ -1,5 +1,4 @@
-import { IsUUID } from '@nestjs/class-validator';
-import { IsDateString, IsNumber, Min, IsOptional } from 'class-validator';
+import { IsDateString, IsNumber, Min, IsOptional, IsUUID } from 'class-validator';
 
 export class UpdateOfferDto {
   

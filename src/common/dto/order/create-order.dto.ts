@@ -1,22 +1,10 @@
-import { IsBoolean, IsNumber, IsOptional, IsPositive, IsUUID, Length } from "class-validator";
+import { Type } from "class-transformer";
+import { ArrayMinSize, IsArray, IsBoolean, IsNumber, IsOptional, IsPositive, IsUUID, Length, ValidateNested } from "class-validator";
+import { OrderItemDto } from "./order-item.dto";
 
 export class CreateOrderDto {
     @IsUUID()
     userId: string;
-
-    @IsNumber()
-    @IsPositive()
-    // @Type(() => Number)
-    totalItems: number;
-
-    @IsNumber()
-    @IsPositive()
-    // @Type(() => Number)
-    totalAmount: number;
-
-    // @IsBoolean()
-    // @IsOptional()
-    // isPaid: boolean = false;
 
     @IsOptional()
     @IsBoolean()
@@ -32,4 +20,10 @@ export class CreateOrderDto {
     @IsOptional()
     @Length(10, 10)
     petOwnerPhone?: string;
+
+    @IsArray()
+    @ArrayMinSize(1)
+    @ValidateNested({ each: true })
+    @Type(() => OrderItemDto)
+    items: OrderItemDto[]
 }
