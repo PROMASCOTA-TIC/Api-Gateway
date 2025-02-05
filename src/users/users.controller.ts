@@ -195,4 +195,5 @@ async updateEntrepreneur(
       this.client.send('find_entrepreneur_by_email', { email: data.email }),
     );
   }
+  
 }
