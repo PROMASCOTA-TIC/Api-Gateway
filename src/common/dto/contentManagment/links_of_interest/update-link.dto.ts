@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUrl, IsNumber, IsUUID, IsNotEmpty, IsDate } from 'class-validator';
+import { IsOptional, IsString, IsUrl, IsNumber, IsUUID, IsNotEmpty, IsDate, IsDateString } from 'class-validator';
 
 export class UpdateLinkDto {
   @IsOptional()
@@ -17,9 +17,9 @@ export class UpdateLinkDto {
   @IsUrl()
   sourceLink?: string; // Enlace fuente del articulo
   
-  @IsOptional()
-  @IsDate()
-  publishDate?: Date; // Campo para la fecha de publicación
+  @IsOptional() // Permitir que la fecha sea opcional
+  @IsDateString()
+  publishDate?: string;
 
   @IsOptional()
   @IsUrl()

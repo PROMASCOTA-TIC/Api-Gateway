@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, Inject, BadRequestException, HttpException, HttpStatus, Patch } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { CreateAdvertorialDto } from 'src/common/dto/contentManagment/advertorials/create-advertorial.dto';
@@ -26,7 +26,7 @@ export class AdvertorialsController {
     @Get('search')
     async searchAdvertorials(@Query('query') query: string) {
         if (!query) {
-            throw new Error('Query parameter must be a valid string');
+            return { message: 'El parámetro query no fue enviado en la URL', query };
         }
         return this.client.send('search_advertorials', { query });
     }

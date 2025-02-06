@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUrl, IsNumber, IsUUID, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsUrl, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateAdvertorialDto {
   @IsNotEmpty()

@@ -27,7 +27,7 @@ export class LinksController {
   @Get('search')
   async searchLinks(@Query('query') query: string) {
     if (!query) {
-      throw new Error('Query parameter must be a valid string');
+      return { message: 'El parámetro query no fue enviado en la URL', query };
     }
     return this.client.send('search_links', { query });
   }
@@ -58,7 +58,9 @@ export class LinksController {
 
   // Actualizar el estado de un enlace
   @Patch('update-status/:linkId')
-  async updateLinkStatus(@Param('linkId') linkId: string, @Body('status') status: 'approved' | 'rejected') {
+  async updateLinkStatus(
+    @Param('linkId') linkId: string, 
+    @Body('status') status: 'approved' | 'rejected') {
     if (!['approved', 'rejected'].includes(status)) {
       throw new Error('Estado inválido: debe ser "approved" o "rejected"');
     }
@@ -82,7 +84,9 @@ export class LinksController {
 
   // Programar la publicación de un enlace
   @Post('schedule/:linkId')
-  async schedulePublication(@Param('linkId') linkId: string, @Body('publishDate') publishDate: Date) {
+  async schedulePublication(
+    @Param('linkId') linkId: string, 
+    @Body('publishDate') publishDate: Date) {
     if (!publishDate) {
       throw new Error('Debe proporcionarse una fecha de publicación');
     }
