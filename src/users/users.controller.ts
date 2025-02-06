@@ -81,6 +81,7 @@ async updateEntrepreneur(
   @Param('idEntrepreneur') idEntrepreneur: string,
   @Body() updateEntrepreneurDto: UpdateEntrepreneurDTO,
 ) {
+  console.log('Updating entrepreneur with ID:', updateEntrepreneurDto);
   updateEntrepreneurDto.idEntrepreneur = idEntrepreneur;
 
   const { callePrincipal, calleSecundaria, numeracion, referencia } = updateEntrepreneurDto;
@@ -128,7 +129,7 @@ async updateEntrepreneur(
       this.client.send({ cmd: 'update_entrepreneur_status' }, { id, estado }),
     );
   }
-  
+
   @Post('create-pet-owner')
   createPetOwner(@Body() createPetOwnerDto: CreatePetOwnerDto) {
     return this.client.send('create_pet_owner', createPetOwnerDto);
