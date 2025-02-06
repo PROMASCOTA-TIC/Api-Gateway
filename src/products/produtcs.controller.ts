@@ -83,15 +83,22 @@ export class ProductsController {
       const response = await lastValueFrom(
         this.client.send('update_product', { id, dto: updateProductDto }),
       );
-      return response;
+  
+      // Asegurar que siempre devuelve un JSON con éxito
+      return {
+        success: true,
+        message: "Producto actualizado exitosamente.",
+        product: response, // Enviar el producto actualizado
+      };
     } catch (error) {
       console.error('Error al actualizar el producto:', error.message);
       throw new HttpException(
-        'Error updating product: ' + error.message,
+        { success: false, message: 'Error updating product: ' + error.message },
         HttpStatus.BAD_REQUEST,
       );
     }
   }
+  
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
@@ -158,6 +165,26 @@ export class ProductsController {
       );
     }
   }
+
+  @Get('/entrepreneur/:entrepreneurId/low-stock')
+async findLowStockByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+  try {
+    this.logger.log(`Obteniendo productos con stock menor a 3 del emprendedor con ID: ${entrepreneurId}`);
+
+    const response = await lastValueFrom(
+      this.client.send('get_low_stock_products_by_entrepreneur', entrepreneurId),
+    );
+
+    return response;
+  } catch (error) {
+    this.logger.error(`Error al obtener productos con bajo stock del emprendedor con ID ${entrepreneurId}: ${error.message}`);
+    throw new HttpException(
+      `Error al obtener productos con bajo stock: ${error.message}`,
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}
+
 
   @Get('/register/categories')
   async getCategories() {
