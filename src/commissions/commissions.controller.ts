@@ -11,7 +11,7 @@ export class CommissionsController {
   ) {}
 
   @Post('calculate-entrepreneur-commission')
-  calculateEntrepreneurCommission(@Body() calculateCommissionDto: CalculateCommissionDto){   
+  calculateEntrepreneurCommission(@Body() calculateCommissionDto: CalculateCommissionDto){  
     return this.client.send('calculate_entrepreneur_commission', { ...calculateCommissionDto });
   }
 

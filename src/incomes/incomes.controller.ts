@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateIncomeDto, GetByDateRangeDto } from 'src/common';
 import { NATS_SERVICE } from 'src/config/services';
@@ -35,7 +35,7 @@ export class IncomesController {
   }
 
   @Get('weekly-sales/:id')
-  getWeeklySales(@Param() entrepreneurId: string) {
-    return this.client.send('get_weekly_sales', { entrepreneurId });
+  getWeeklySales(@Param('id', ParseUUIDPipe) entrepreneurId: string) {
+    return this.client.send('get_weekly_sales', entrepreneurId );
   }
 }
