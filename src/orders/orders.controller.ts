@@ -36,15 +36,14 @@ export class OrdersController {
     return this.client.send('get_one_user_order', payload);
   }
 
-  // TODO: Poner el userId como opcional
   @Patch(':id/item/:orderItemId')
-  async confirmDeliverItem(
+  async changeOrderItemStatus(
     @Param('id') id: string,
     @Param('orderItemId') orderItemId: string,
-    @Body() body: { userId: string }
+    @Body() body?: { userId: string }
   ) {
     const payload = { id, orderItemId, ...body };
-    return this.client.send('confirm_deliver_item', payload);
+    return this.client.send('change_order_item_status', payload);
   }
 
   @Get(':entrepreneurId')
