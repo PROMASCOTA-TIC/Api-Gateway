@@ -1,9 +1,9 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsIn, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { IsDateString, IsIn, IsNumber, IsOptional, IsString, IsUUID, Min } from "class-validator";
 
 export class CreatePaymentDto {
 
-    @IsString()
+    @IsUUID()
     orderId: string;
 
     @IsString()
@@ -19,8 +19,16 @@ export class CreatePaymentDto {
     @IsOptional()
     @IsString()
     @IsIn(['P', 'R', 'A'])
-    status: string;
+    status?: string;
 
     @IsDateString()
     paymentDate: Date;
+
+    @IsOptional()
+    @IsString()
+    comment?: string;
+
+    @IsOptional()
+    @IsString()
+    voucherUrl?: string;
 }
