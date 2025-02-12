@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { IsOptional } from 'class-validator';
 import { CreateOrderDto } from 'src/common/dto/order/create-order.dto';
 
 @Controller('orders')
@@ -30,23 +31,28 @@ export class OrdersController {
   }
 
   @Post(':id')
-  async findOne(@Param('id') id: string, @Body('userId') userId: string) {
+  async findOne(@Param('id') id: string, @Body('userId') userId?: string) {
     const payload = { id, userId };
     return this.client.send('get_one_user_order', payload);
   }
 
   @Patch(':id/item/:orderItemId')
-  async confirmDeliverItem(
+  async changeOrderItemStatus(
     @Param('id') id: string,
     @Param('orderItemId') orderItemId: string,
-    @Body() body: { userId: string }
+    @Body() body?: { userId: string }
   ) {
     const payload = { id, orderItemId, ...body };
-    return this.client.send('confirm_deliver_item', payload);
+    return this.client.send('change_order_item_status', payload);
   }
 
   @Get(':entrepreneurId')
   async getItemsByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
     return this.client.send('get_items_by_entrepreneur', { entrepreneurId });
+  }
+
+  @Get(':entrepreneurId/orders')
+  async getOrdersByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+    return this.client.send('get_orders_by_entrepreneur', { entrepreneurId });
   }
 }
