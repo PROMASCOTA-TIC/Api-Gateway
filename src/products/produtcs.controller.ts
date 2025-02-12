@@ -265,5 +265,10 @@ async findLowStockByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string
     }
   }
 
-  
+  @Get(':entrepreneurId/orders-total')
+async getOrdersTotalByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+  return this.client.send('get_orders_total_by_entrepreneur', { entrepreneurId });
+}
+
+
 }
