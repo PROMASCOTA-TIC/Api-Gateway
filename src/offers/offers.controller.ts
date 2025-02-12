@@ -134,4 +134,20 @@ export class OffersController {
       );
     }
   }
+
+  @Get('/entrepreneur/:entrepreneurId')
+  async findAllByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+    try {
+      const response = await lastValueFrom(
+        this.client.send('get_offers_by_entrepreneur', entrepreneurId),
+      );
+      return { status: 'success', data: response };
+    } catch (error) {
+      console.error('Error obteniendo las ofertas:', error.message);
+      throw new HttpException(
+        `Error obteniendo las ofertas: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
