@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { IsOptional } from 'class-validator';
 import { CreateOrderDto } from 'src/common/dto/order/create-order.dto';
 
 @Controller('orders')
@@ -30,11 +31,12 @@ export class OrdersController {
   }
 
   @Post(':id')
-  async findOne(@Param('id') id: string, @Body('userId') userId: string) {
+  async findOne(@Param('id') id: string, @Body('userId') userId?: string) {
     const payload = { id, userId };
     return this.client.send('get_one_user_order', payload);
   }
 
+  // TODO: Poner el userId como opcional
   @Patch(':id/item/:orderItemId')
   async confirmDeliverItem(
     @Param('id') id: string,
@@ -48,5 +50,10 @@ export class OrdersController {
   @Get(':entrepreneurId')
   async getItemsByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
     return this.client.send('get_items_by_entrepreneur', { entrepreneurId });
+  }
+
+  @Get(':entrepreneurId/orders')
+  async getOrdersByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+    return this.client.send('get_orders_by_entrepreneur', { entrepreneurId });
   }
 }
