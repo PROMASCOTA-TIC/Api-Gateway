@@ -39,6 +39,11 @@ export class TransactionsController {
     return this.client.send('update_entrepreneur_payment', { id, ...updateTransactionDto });
   }  
 
+  @Get('user/:userId')
+  findOneEntrepreneurPaymentByUser(@Param('userId') userId: string) {
+    return this.client.send('find_one_entrepreneur_payments_by_user', userId);
+  }
+
   @Get('transfers/all')
   findAllTransfers() {
     return this.client.send('find_all_transfers', {});
