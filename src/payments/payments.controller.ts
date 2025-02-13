@@ -31,6 +31,7 @@ export class PaymentsController {
 
   @Patch(':id')
   update(
+    @Param('id') id: string,
     @Body() updatePaymentDto: UpdatePaymentDto
   ) {
     return this.client.send('update_payment', { ...updatePaymentDto });

@@ -46,9 +46,14 @@ export class OrdersController {
     return this.client.send('change_order_item_status', payload);
   }
 
-  @Get(':entrepreneurId')
-  async getItemsByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
-    return this.client.send('get_items_by_entrepreneur', { entrepreneurId });
+  @Get('orderItemsEntrepreneur')
+  async getItemsByEntrepreneur() {
+    return this.client.send('get_items_by_entrepreneur', { });
+  }
+
+  @Get('orderItemsPetOwner')
+  async getItemsByPetOwner() {
+    return this.client.send('get_items_by_petOwner', {});
   }
 
   @Get(':entrepreneurId/orders')

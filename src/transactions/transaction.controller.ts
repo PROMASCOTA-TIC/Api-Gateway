@@ -29,7 +29,7 @@ export class TransactionsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrasferDto: UpdateTransferDto
   ) {
-    return this.client.send('validate_transfer', { id, ...updateTrasferDto });
+    return this.client.send('validate_transfer', { ...updateTrasferDto });
   }
 
   @Patch(':id')
@@ -38,4 +38,9 @@ export class TransactionsController {
     @Body() updateTransactionDto: UpdateTransactionDto) {
     return this.client.send('update_entrepreneur_payment', { id, ...updateTransactionDto });
   }  
+
+  @Get('transfers/all')
+  findAllTransfers() {
+    return this.client.send('find_all_transfers', {});
+  }
 }
