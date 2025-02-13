@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateEntrepreneurDTO } from 'src/common/dto/global/create-entrepreneur.dto';
 import { CreatePetOwnerDto } from 'src/common/dto/global/create-pet-owner.dto';
@@ -43,7 +43,27 @@ export class AuthController {
   }
 
   @Post('login-entrepreneur')
-  loginEntrepreneur(@Body() loginDto: LoginDto) {
-    return this.client.send('login-entrepreneur', {...loginDto});
+  async loginEntrepreneur(@Body() loginDto: LoginDto) {
+    try {
+      console.log(`Request received in API Gateway for entrepreneur email: ${loginDto.email}`);
+      const response = await this.client.send('login-entrepreneur', loginDto).toPromise();
+      return response; 
+    } catch (error) {
+      console.error('Error en API Gateway login-entrepreneur:', error);
+
+      if (error.status && error.message) {
+        throw new HttpException(error.message, error.status);
+      }
+
+
+      if (error.error && error.error.status) {
+        throw new HttpException(error.error.message, error.error.status);
+      }
+
+      throw new HttpException(
+        'Error interno en el servidor de autenticación',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
   }
 }
