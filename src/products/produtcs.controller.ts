@@ -270,5 +270,25 @@ async getOrdersTotalByEntrepreneur(@Param('entrepreneurId') entrepreneurId: stri
   return this.client.send('get_orders_total_by_entrepreneur', { entrepreneurId });
 }
 
+@Get('/entrepreneur/:entrepreneurId/top-selling')
+async findTopSellingByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
+  try {
+    this.logger.log(`Obteniendo los 10 productos más vendidos del emprendedor con ID: ${entrepreneurId}`);
+
+    const response = await lastValueFrom(
+      this.client.send('get_top_selling_products_by_entrepreneur', entrepreneurId),
+    );
+
+    return response;
+  } catch (error) {
+    this.logger.error(`Error al obtener los productos más vendidos: ${error.message}`);
+    throw new HttpException(
+      `Error al obtener los productos más vendidos: ${error.message}`,
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}
+
+
 
 }
