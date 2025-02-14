@@ -29,6 +29,13 @@ export class PaymentsController {
     return this.client.send('find_one_payment', id);
   }
 
+  @Get(':orderId/order')
+  findOneByOrderId(
+    @Param('orderId') orderId: string
+  ) {
+    return this.client.send('find_one_payment_by_order_id', orderId );
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

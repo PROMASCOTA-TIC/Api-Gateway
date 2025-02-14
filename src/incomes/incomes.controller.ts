@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateIncomeDto, GetByDateRangeDto } from 'src/common';
+import { CreateSaleDto } from 'src/common/dto/finance/create-sale.dto';
 import { NATS_SERVICE } from 'src/config/services';
 
 @Controller('incomes')
@@ -37,5 +38,10 @@ export class IncomesController {
   @Get('weekly-sales/:id')
   getWeeklySales(@Param('id', ParseUUIDPipe) entrepreneurId: string) {
     return this.client.send('get_weekly_sales', entrepreneurId );
+  }
+
+  @Post('create-sale')
+  createSaleByProduct(@Body() createSaleDto: CreateSaleDto) {
+    return this.client.send('create_sale_by_product', {...createSaleDto});
   }
 }
