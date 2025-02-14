@@ -16,6 +16,10 @@ import { PetsModule } from './pets/pets.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { PaymentsModule } from './payments/payments.module';
 import { OrdersModule } from './orders/orders.module';
+import { FaqsModule } from './faqs/faqs.module';
+import { AdvertorialsModule } from './advertorials/advertorials.module';
+import { LinksModule } from './links_of_interest/links.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
   imports: [
@@ -23,7 +27,10 @@ import { OrdersModule } from './orders/orders.module';
     ExpensesModule, IncomesModule, FinancialReportModule, TransactionsModule, CommissionsModule, TaxesModule, 
     UsersModule, AuthModule, 
     ShoppingCartModule, PetsModule, AddressesModule, PaymentsModule, OrdersModule,
-    ProductsModule,OffersModule],
+    ProductsModule, OffersModule, 
+    FaqsModule, AdvertorialsModule, LinksModule, ChatbotModule
+  ],
 })
+
 export class AppModule {}
 console.log(envs);
