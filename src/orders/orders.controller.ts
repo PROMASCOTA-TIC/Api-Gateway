@@ -39,10 +39,9 @@ export class OrdersController {
   @Patch(':id/item/:orderItemId')
   async changeOrderItemStatus(
     @Param('id') id: string,
-    @Param('orderItemId') orderItemId: string,
-    @Body() body?: { userId: string }
+    @Param('orderItemId') orderItemId: string
   ) {
-    const payload = { id, orderItemId, ...body };
+    const payload = { id, orderItemId };
     return this.client.send('change_order_item_status', payload);
   }
 
