@@ -79,6 +79,10 @@ export class AdvertorialsController {
     // Obtener un publireportaje por advertorialId
     @Get('detail/:advertorialId')
     async getAdvertorialById(@Param('advertorialId') advertorialId: string) {
+        console.log("ID recibido en API Gateway:", advertorialId); // 🛠️ Verifica si llega el ID
+        if (!advertorialId || advertorialId === "undefined") {
+            throw new BadRequestException("ID del advertorial no válido");
+        }
         return this.client.send('get_advertorial_by_id', { advertorialId });
     }
 
