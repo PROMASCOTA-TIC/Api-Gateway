@@ -289,6 +289,41 @@ async findTopSellingByEntrepreneur(@Param('entrepreneurId') entrepreneurId: stri
   }
 }
 
+@Get('/inventory/recent-products')
+async findRecentProducts() {
+  try {
+    this.logger.log('Solicitud HTTP para obtener los productos recientes.');
+    
+    const response = await lastValueFrom(
+      this.client.send('get_recent_products_all', {}) 
+    );
+    
+    return response;
+  } catch (error) {
+    this.logger.error(`Error al obtener productos recientes: ${error.message}`);
+    throw new HttpException(
+      `Error al obtener productos recientes: ${error.message}`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
+  }
+}
+
+@Get('/inventory/top-selling-products')
+async findTopSellingProducts() {
+  try {
+    const response = await lastValueFrom(
+      this.client.send('get_top_selling_products_all', {}) 
+    );
+
+    return response;
+  } catch (error) {
+    this.logger.error(`Error al obtener productos más vendidos: ${error.message}`);
+    throw new HttpException(
+      `Error al obtener productos más vendidos: ${error.message}`,
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
+  }
+}
 
 
 }
