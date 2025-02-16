@@ -25,8 +25,8 @@ export class OrdersController {
   }
 
   @Patch(':id')
-  async orderPaid(@Param('id') id: string, @Body() body: { userId: string, paymentComment: string }) {
-    const payload = { id, userId: body.userId, paymentComment: body.paymentComment };
+  async orderPaid(@Param('id') id: string, @Body() body: { userId: string }) {
+    const payload = { id, userId: body.userId };
     return this.client.send('order_paid', payload);
   }
 
@@ -58,5 +58,10 @@ export class OrdersController {
   @Get(':entrepreneurId/orders')
   async getOrdersByEntrepreneur(@Param('entrepreneurId') entrepreneurId: string) {
     return this.client.send('get_orders_by_entrepreneur', { entrepreneurId });
+  }
+
+  @Patch('complete/:id')
+  async completeOrder(@Param('id') id: string) {
+    return this.client.send('complete_order', { id });
   }
 }
