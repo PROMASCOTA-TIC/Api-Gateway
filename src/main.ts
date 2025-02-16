@@ -18,12 +18,12 @@ async function bootstrap() {
   )
 
   app.enableCors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
+    origin: '*',
+    methods: '*',
+    allowedHeaders: '*',
   });
 
-  await app.listen(envs.port);
+  await app.listen(envs.port, '0.0.0.0');
 
   logger.log(`Gateway is running on port ${envs.port}`);
 }
