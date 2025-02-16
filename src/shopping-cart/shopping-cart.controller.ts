@@ -17,7 +17,7 @@ export class ShoppingCartController {
 
   @Get()
   async findAllByUser(@Query('userId', ParseUUIDPipe) userId: string) {
-    return this.client.send('get_shopping_cart_by_user', userId);
+    return this.client.send('get_shopping_cart_by_user', { userId });
   }
 
   @Patch(':id')
